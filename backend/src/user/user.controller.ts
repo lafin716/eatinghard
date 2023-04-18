@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { JwtAuthGuard } from 'src/auth/jwt/jwt.guard';
 
@@ -7,16 +7,17 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @UseGuards(JwtAuthGuard)
-  @Get(':id')
-  getUser(@Param('id') id: string, @Req() req) {
+  @Get('me')
+  getUser(@Req() req) {
     const userId = req.user.iss;
-    if (userId !== id) {
-      return {
-        result: false,
-        message: '유저를 찾을 수 없습니다.',
-      };
-    }
-    const user = this.userService.getUserById(id);
+    const user = this.userService.getUserById(userId);
+
+    return user;
+  }
+
+  @Post('find')
+  findUserByEmail(@Body() email: string) {
+    const user = this.userService.getUser(email);
     return user;
   }
 }

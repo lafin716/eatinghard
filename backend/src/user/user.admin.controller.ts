@@ -12,9 +12,9 @@ import { RolesGuard } from 'src/auth/role/roles.guard';
 export class AdminUserController {
   constructor(private readonly userService: UserService) {}
 
-  @Get(':email')
-  getUser(@Param('email') email: string): Promise<User> {
-    const user = this.userService.getUser(email);
+  @Get(':id')
+  getUserById(@Param('id') id: string): Promise<User> {
+    const user = this.userService.getUserById(id);
     return user;
   }
 
