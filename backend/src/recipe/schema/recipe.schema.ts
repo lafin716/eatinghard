@@ -1,29 +1,28 @@
 import { Prop, Schema, SchemaFactory, SchemaOptions } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
-import { Nutrient } from '../type/nutrients.type';
+import { Nutrient } from 'src/ingredients/type/nutrients.type';
 
-// 스키마 옵션
 const options: SchemaOptions = {
-  collection: 'ingredients',
+  collection: 'recipes',
   timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' },
   _id: true,
 };
 
 @Schema(options)
-export class Ingredient extends Document {
+export class Recipe extends Document {
   _id?: Types.ObjectId;
   @Prop({ required: true })
   name: string;
   @Prop({ required: false })
   description?: string;
-  @Prop({ required: true, type: Object })
-  serve: Nutrient;
   @Prop({ required: false })
-  serves?: Nutrient[];
+  ingredients?: Types.ObjectId[];
   @Prop({ required: false })
   tags?: string[];
+  @Prop({ required: false, type: Object })
+  totalServes?: Nutrient;
   createdAt?: Date;
   updatedAt?: Date;
 }
 
-export const IngredientSchema = SchemaFactory.createForClass(Ingredient);
+export const RecipeSchema = SchemaFactory.createForClass(Recipe);
