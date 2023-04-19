@@ -7,6 +7,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { IngredientsModule } from './ingredients/ingredients.module';
 import { RecipeModule } from './recipe/recipe.module';
+import { DietModule } from './diet/diet.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { RecipeModule } from './recipe/recipe.module';
     AuthModule,
     IngredientsModule,
     RecipeModule,
+    DietModule,
   ],
   controllers: [AppController],
   providers: [AppService],

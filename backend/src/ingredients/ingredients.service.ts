@@ -46,6 +46,15 @@ export class IngredientsService {
       return responseError('재료를 찾을 수 없습니다.');
     }
 
+    const isDuplicated = await this.ingredientModel.findOne({
+      name: dto.name,
+      _id: { $ne: ingredient._id },
+    });
+
+    if (isDuplicated) {
+      return responseError('이미 존재하는 재료입니다.');
+    }
+
     const updateIngredient = {
       name: dto.name || ingredient.name,
       description: dto.description || ingredient.description,

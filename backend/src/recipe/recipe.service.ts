@@ -47,6 +47,15 @@ export class RecipeService {
       return responseError('레시피를 찾을 수 없습니다.');
     }
 
+    const isDuplicated = await this.recipeModel.findOne({
+      name: dto.name,
+      _id: { $ne: recipe._id },
+    });
+
+    if (isDuplicated) {
+      return responseError('이미 존재하는 레시피입니다.');
+    }
+
     const ingredients = await this.ingredientModel.find({
       _id: { $in: dto.ingredients },
     });
