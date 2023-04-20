@@ -75,8 +75,6 @@ export class UserService {
   async getUser(email: string): Promise<any> {
     try {
       const user = await this.userModel.findOne({ email }).lean();
-      console.log('user', user);
-
       if (!user) {
         return {
           result: false,
@@ -133,7 +131,6 @@ export class UserService {
     // 유저 저장 전에 비밀번호를 해싱처리한다.
     user.password = await this.encryptPassword(user.password);
     const result = await this.userModel.create(user);
-    console.log('result', result);
 
     return result;
   }
@@ -164,7 +161,6 @@ export class UserService {
       // 유저 저장 전에 비밀번호를 해싱처리한다.
       user.password = await this.encryptPassword(user.password);
       const result = await this.userModel.create(user);
-      console.log('result', result);
 
       return result;
     } catch (error) {

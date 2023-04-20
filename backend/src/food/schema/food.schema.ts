@@ -1,9 +1,11 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Nutrition } from '../type/nutrition.type';
 import {
   DefaultSchema,
   getDefaultSchemaOption,
 } from 'src/shared/schema/default.schema.option';
+import { Nutrition } from '../type/nutrition.type';
+import { UpdateFoodDto } from '../dto/update-food.dto';
+import tagParser from 'src/shared/helper/tag.parser';
 
 @Schema(getDefaultSchemaOption('foods'))
 export class Food extends DefaultSchema {

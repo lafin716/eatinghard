@@ -6,6 +6,7 @@ import { responseError, responseOk } from 'src/shared/helper/response.helper';
 import { CreateFoodDto } from './dto/create-food.dto';
 import { UpdateFoodDto } from './dto/update-food.dto';
 import { AddNutritionDto } from './dto/add-nutrition.dto';
+import tagParser from 'src/shared/helper/tag.parser';
 
 @Injectable()
 export class FoodService {
@@ -18,7 +19,7 @@ export class FoodService {
   async getFoodById(id: string) {
     const Food = await this.foodModel.findById(id).lean();
     if (!Food) {
-      return responseError('재료를 찾을 수 없습니다.');
+      return responseError('음식을 찾을 수 없습니다.');
     }
 
     return responseOk('검색완료', Food);
@@ -30,18 +31,23 @@ export class FoodService {
     });
 
     if (isDuplicated) {
-      return responseError('이미 존재하는 재료입니다.');
+      return responseError('이미 존재하는 음식입니다.');
     }
 
-    const Food = new this.foodModel(dto);
-    this.foodModel.create(Food);
-    return responseOk('재료가 추가되었습니다.');
+    const Food = new this.foodModel({
+      ...dto,
+      tags: tagParser(dto.tags),
+      serves: [dto.serve],
+    });
+    await this.foodModel.create(Food);
+    return responseOk('음식이 추가되었습니다.');
   }
 
   async updateFood(id: string, dto: UpdateFoodDto) {
-    const food = await this.foodModel.findById(id).lean();
+    const food = await this.foodModel.findById(id);
+
     if (!food) {
-      return responseError('재료를 찾을 수 없습니다.');
+      return responseError('음식을 찾을 수 없습니다.');
     }
 
     const isDuplicated = await this.foodModel.findOne({
@@ -50,29 +56,46 @@ export class FoodService {
     });
 
     if (isDuplicated) {
-      return responseError('이미 존재하는 재료입니다.');
+      return responseError('이미 존재하는 음식입니다.');
     }
 
-    const updateFood = {
-      name: dto.name || food.name,
-      description: dto.description || food.description,
-      tags: dto.tags || food.tags,
-      serves: [...food.serves, dto.serve],
-    };
+    if (dto.serve) {
+      if (dto.serve.amount === 0) {
+        return responseError('영양정보 단위 크기는 0보다 커야합니다.');
+      }
+    }
 
-    this.foodModel.findByIdAndUpdate(id, updateFood);
-    return responseOk('재료가 수정되었습니다.');
+    food.name = dto.name || food.name;
+    food.description = dto.description || food.description;
+    tagParser(dto.tags).forEach((tag) => {
+      if (!food.tags.includes(tag)) {
+        food.tags.push(tag);
+      }
+    });
+
+    if (dto.serve) {
+      // 유닛이 같은 경우에는 기존의 값을 덮어쓴다.
+      const index = food.serves.findIndex(
+        (serve) => serve.unit === dto.serve.unit,
+      );
+      if (index > -1) {
+        food.serves[index] = dto.serve;
+      }
+    }
+
+    await this.foodModel.findByIdAndUpdate(id, food);
+    return responseOk('음식이 수정되었습니다.');
   }
 
   async deleteFood(id: string) {
     await this.foodModel.findByIdAndDelete(id);
-    return responseOk('재료가 삭제되었습니다.');
+    return responseOk('음식이 삭제되었습니다.');
   }
 
   async getFoodByTags(tags: string[]) {
     const food = await this.foodModel.find({ tags: { $in: tags } }).lean();
     if (!food) {
-      return responseError('해당 태그로 등록된 재료를 찾을 수 없습니다.');
+      return responseError('해당 태그로 등록된 음식을 찾을 수 없습니다.');
     }
 
     return responseOk('검색완료', food);
@@ -81,7 +104,7 @@ export class FoodService {
   async getFoodByNames(names: string[]) {
     const food = await this.foodModel.find({ name: { $in: names } }).lean();
     if (!food) {
-      return responseError('해당 이름으로 등록된 재료를 찾을 수 없습니다.');
+      return responseError('해당 이름으로 등록된 음식을 찾을 수 없습니다.');
     }
 
     return responseOk('검색완료', food);
@@ -91,7 +114,7 @@ export class FoodService {
     try {
       const food = await this.foodModel.findById(id).lean();
       if (!food) {
-        return responseError('재료를 찾을 수 없습니다.');
+        return responseError('음식을 찾을 수 없습니다.');
       }
 
       const updateFood = {
