@@ -80,6 +80,8 @@ export class FoodService {
       );
       if (index > -1) {
         food.serves[index] = dto.serve;
+      } else {
+        food.serves.push(dto.serve);
       }
     }
 
@@ -110,26 +112,30 @@ export class FoodService {
     return responseOk('검색완료', food);
   }
 
-  async addNutrition(id: string, nutrition: AddNutritionDto) {
+  async addNutrition(id: string, dto: AddNutritionDto) {
     try {
+      if (!dto.nutrition) {
+        return responseError('영양소 정보가 없습니다.');
+      }
+
       const food = await this.foodModel.findById(id).lean();
       if (!food) {
         return responseError('음식을 찾을 수 없습니다.');
       }
 
-      const updateFood = {
-        name: food.name,
-        description: food.description,
-        tags: food.tags,
-        serves: [
-          ...food.serves,
-          {
-            ...nutrition.nutrition,
-          },
-        ],
-      };
+      if (dto.nutrition) {
+        // 유닛이 같은 경우에는 기존의 값을 덮어쓴다.
+        const index = food.serves.findIndex(
+          (serve) => serve.unit === dto.nutrition.unit,
+        );
+        if (index > -1) {
+          food.serves[index] = dto.nutrition;
+        } else {
+          food.serves.push(dto.nutrition);
+        }
+      }
 
-      await this.foodModel.findByIdAndUpdate(id, updateFood);
+      await this.foodModel.findByIdAndUpdate(id, food);
       return responseOk('영양소가 추가되었습니다.');
     } catch (error) {
       return responseError('영양소 추가가 실패하였습니다. :: ' + error);
