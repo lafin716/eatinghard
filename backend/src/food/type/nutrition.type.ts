@@ -1,5 +1,6 @@
-interface Nutrient {
-  serve: ServeSize;
+interface Nutrition {
+  amount: number;
+  unit: string;
   calories: number;
   carbohydrates: number;
   protein: number;
@@ -15,9 +16,4 @@ interface Nutrient {
   vitaminC: number;
 }
 
-interface ServeSize {
-  amount: number;
-  unit: string;
-}
-
-export { Nutrient, ServeSize };
+export { Nutrition };

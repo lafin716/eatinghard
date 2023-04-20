@@ -5,9 +5,9 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-import { IngredientsModule } from './ingredients/ingredients.module';
 import { RecipeModule } from './recipe/recipe.module';
 import { DietModule } from './diet/diet.module';
+import { FoodModule } from './food/food.module';
 
 @Module({
   imports: [
@@ -26,9 +26,9 @@ import { DietModule } from './diet/diet.module';
     }),
     UserModule,
     AuthModule,
-    IngredientsModule,
     RecipeModule,
     DietModule,
+    FoodModule,
   ],
   controllers: [AppController],
   providers: [AppService],

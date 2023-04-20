@@ -1,10 +1,10 @@
 import { IsString } from 'class-validator';
-import { Nutrient } from '../type/nutrients.type';
+import { Nutrition } from '../type/nutrition.type';
 
-export class CreateIngredientDto {
+export class CreateFoodDto {
   @IsString()
   readonly name: string;
   readonly description: string;
   readonly tags: string[];
-  readonly serve: Nutrient;
+  readonly serve: Nutrition;
 }

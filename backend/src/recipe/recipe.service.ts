@@ -4,15 +4,11 @@ import { Recipe } from './schema/recipe.schema';
 import { Model } from 'mongoose';
 import { responseError, responseOk } from 'src/shared/helper/response.helper';
 import { CreateRecipeDto } from './dto/create-recipe.dto';
-import { Nutrient } from 'src/ingredients/type/nutrients.type';
-import { Ingredient } from 'src/ingredients/schema/ingredients.schema';
 
 @Injectable()
 export class RecipeService {
   constructor(
     @InjectModel(Recipe.name) private readonly recipeModel: Model<Recipe>,
-    @InjectModel(Ingredient.name)
-    private readonly ingredientModel: Model<Ingredient>,
   ) {}
 
   async getRecipes() {
@@ -56,20 +52,20 @@ export class RecipeService {
       return responseError('이미 존재하는 레시피입니다.');
     }
 
-    const ingredients = await this.ingredientModel.find({
-      _id: { $in: dto.ingredients },
-    });
-    if (ingredients.length !== dto.ingredients.length) {
-      return responseError('잘못된 재료가 포함되어 있습니다.');
-    }
+    // const ingredients = await this.ingredientModel.find({
+    //   _id: { $in: dto.ingredients },
+    // });
+    // if (ingredients.length !== dto.ingredients.length) {
+    //   return responseError('잘못된 재료가 포함되어 있습니다.');
+    // }
 
-    const serves = ingredients.map((ingredient) => ingredient.serve);
+    // const serves = ingredients.map((ingredient) => ingredient.serve);
     const updateRecipe = {
       name: dto.name || recipe.name,
       description: dto.description || recipe.description,
       ingredients: dto.ingredients || recipe.ingredients,
       tags: dto.tags || recipe.tags,
-      totalServes: this.calculateNutrients(serves),
+      // totalServes: this.calculateNutrients(serves),
     };
 
     await this.recipeModel.findByIdAndUpdate(id, updateRecipe);
@@ -86,24 +82,24 @@ export class RecipeService {
     return responseOk('레시피가 삭제되었습니다.');
   }
 
-  private calculateNutrients(nutrients: Nutrient[]) {
-    return nutrients.reduce((acc, cur) => {
-      return {
-        serve: acc.serve,
-        calories: acc.calories + cur.calories,
-        carbohydrates: acc.carbohydrates + cur.carbohydrates,
-        protein: acc.protein + cur.protein,
-        fat: acc.fat + cur.fat,
-        saturatedFat: acc.saturatedFat + cur.saturatedFat,
-        transFat: acc.transFat + cur.transFat,
-        cholesterol: acc.cholesterol + cur.cholesterol,
-        sodium: acc.sodium + cur.sodium,
-        sugar: acc.sugar + cur.sugar,
-        calcium: acc.calcium + cur.calcium,
-        iron: acc.iron + cur.iron,
-        vitaminA: acc.vitaminA + cur.vitaminA,
-        vitaminC: acc.vitaminC + cur.vitaminC,
-      };
-    });
-  }
+  // private calculateNutrients(nutrients: Nutrient[]) {
+  //   return nutrients.reduce((acc, cur) => {
+  //     return {
+  //       serve: acc.serve,
+  //       calories: acc.calories + cur.calories,
+  //       carbohydrates: acc.carbohydrates + cur.carbohydrates,
+  //       protein: acc.protein + cur.protein,
+  //       fat: acc.fat + cur.fat,
+  //       saturatedFat: acc.saturatedFat + cur.saturatedFat,
+  //       transFat: acc.transFat + cur.transFat,
+  //       cholesterol: acc.cholesterol + cur.cholesterol,
+  //       sodium: acc.sodium + cur.sodium,
+  //       sugar: acc.sugar + cur.sugar,
+  //       calcium: acc.calcium + cur.calcium,
+  //       iron: acc.iron + cur.iron,
+  //       vitaminA: acc.vitaminA + cur.vitaminA,
+  //       vitaminC: acc.vitaminC + cur.vitaminC,
+  //     };
+  //   });
+  // }
 }

@@ -1,10 +1,10 @@
 import { Schema, SchemaFactory } from '@nestjs/mongoose';
 import {
   DefaultSchema,
-  defaultSchemaOption,
+  getDefaultSchemaOption,
 } from 'src/shared/schema/default.schema.option';
 
-@Schema(defaultSchemaOption)
+@Schema(getDefaultSchemaOption('diets'))
 class Diet extends DefaultSchema {
   name: string;
   description?: string;

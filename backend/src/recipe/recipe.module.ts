@@ -3,12 +3,12 @@ import { RecipeController } from './recipe.controller';
 import { RecipeService } from './recipe.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Recipe, RecipeSchema } from './schema/recipe.schema';
-import { IngredientsModule } from 'src/ingredients/ingredients.module';
+// import { IngredientsModule } from 'src/ingredients/ingredients.module';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Recipe.name, schema: RecipeSchema }]),
-    IngredientsModule,
+    // IngredientsModule,
   ],
   controllers: [RecipeController],
   providers: [RecipeService],

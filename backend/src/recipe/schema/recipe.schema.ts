@@ -1,14 +1,9 @@
 import { Prop, Schema, SchemaFactory, SchemaOptions } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
-import { Nutrient } from 'src/ingredients/type/nutrients.type';
+import { Nutrition } from 'src/food/type/nutrition.type';
+import { getDefaultSchemaOption } from 'src/shared/schema/default.schema.option';
 
-const options: SchemaOptions = {
-  collection: 'recipes',
-  timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' },
-  _id: true,
-};
-
-@Schema(options)
+@Schema(getDefaultSchemaOption('recipes'))
 export class Recipe extends Document {
   _id?: Types.ObjectId;
   @Prop({ required: true })
@@ -20,7 +15,7 @@ export class Recipe extends Document {
   @Prop({ required: false })
   tags?: string[];
   @Prop({ required: false, type: Object })
-  totalServes?: Nutrient;
+  totalServes?: Nutrition;
   createdAt?: Date;
   updatedAt?: Date;
 }
