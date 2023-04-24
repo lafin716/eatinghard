@@ -63,6 +63,28 @@
 </template>
 
 <script>
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+// import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyBqa6RKdvUNHLR2HKKE0chF_y1Hhwac0z4",
+  authDomain: "eating-hard.firebaseapp.com",
+  projectId: "eating-hard",
+  storageBucket: "eating-hard.appspot.com",
+  messagingSenderId: "993037487113",
+  appId: "1:993037487113:web:9f1170427ded11a62efcd8",
+  measurementId: "G-KCXQ9BD70X"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+// const analytics = getAnalytics(app);
+
 export default {
   name: 'DefaultLayout',
   data() {
@@ -87,6 +109,9 @@ export default {
       rightDrawer: false,
       title: 'Vuetify.js',
     }
+  },
+  created() {
+    console.log(app);
   },
 }
 </script>
